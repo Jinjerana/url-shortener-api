@@ -13,7 +13,7 @@ A production-ready URL shortener built with Spring Boot 3.x
 docker compose up --build -d
 
 ## API Endpoints
-POST | /api/shorten | Shorten a URL
-GET | /{shortCode} | Redirect to original URL
-DELETE | /api/urls/{shortCode} | Delete a short URL 
-GET | /api/stats/{shortCode} | Get click statistics
+### POST | /api/shorten | Shorten a URL
+### GET | /{shortCode} | Redirect to original URL
+### DELETE | /api/urls/{shortCode} | Delete a short URL 
+### GET | /api/stats/{shortCode} | Get click statistics
