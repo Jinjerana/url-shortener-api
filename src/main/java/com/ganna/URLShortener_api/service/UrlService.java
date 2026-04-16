@@ -11,6 +11,7 @@ import com.ganna.URLShortener_api.dto.ShortenResponse;
 import com.ganna.URLShortener_api.dto.UrlStatsResponse;
 import com.ganna.URLShortener_api.model.ShortUrl;
 import com.ganna.URLShortener_api.repository.UrlRepository;
+import com.ganna.URLShortener_api.exception.UrlNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class UrlService {
      * 
      * @param shortCode the short code to look up
      * @return the original URL
-     * @throws RuntimeException if the short code is not found
+     * @throws UrlNotFoundException if the short code is not found
      */
 
     @Transactional
@@ -73,7 +74,7 @@ public class UrlService {
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() -> {
                     log.warn("Short code not found: {}", shortCode);
-                    return new RuntimeException("Short code not found: " + shortCode);
+                    throw new UrlNotFoundException(shortCode);
                 });
 
         urlRepository.incrementClickCountAndSetLastAccessedAt(shortCode);
@@ -88,7 +89,7 @@ public class UrlService {
      * Deletes the URL corresponding to the given short code.
      *
      * @param shortCode the short code of the URL to delete
-     * @throws RuntimeException if the short code is not found
+     * @throws UrlNotFoundException if the short code is not found
      */
 
     @Transactional
@@ -97,7 +98,7 @@ public class UrlService {
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() -> {
                     log.warn("Short code not found for deletion: {}", shortCode);
-                    return new RuntimeException("Short code not found for deletion: " + shortCode);
+                    throw new UrlNotFoundException(shortCode);
                 });
 
         urlRepository.delete(shortUrl);
@@ -113,7 +114,7 @@ public class UrlService {
      *
      * @param shortCode the short code for which to retrieve statistics
      * @return UrlStatsResponse containing the statistics
-     * @throws RuntimeException if the short code is not found
+     * @throws UrlNotFoundException if the short code is not found
      */
 
     public UrlStatsResponse getStats(String shortCode) {
@@ -121,7 +122,7 @@ public class UrlService {
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() -> {
                     log.warn("Short code not found for stats: {}", shortCode);
-                    return new RuntimeException("Short code not found for stats: " + shortCode);
+                    throw new UrlNotFoundException(shortCode);
                 });
 
         return new UrlStatsResponse(
