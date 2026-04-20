@@ -1,0 +1,31 @@
+# excluded from Docker build
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+*.iml
+-vscode/
+
+# Maven
+target/
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+application-local.yml
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Documentation
+README.md
+*.md
