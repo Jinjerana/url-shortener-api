@@ -38,7 +38,10 @@ target/
 *.war
 
 .env
+.env.local
+.env.production
 application-local.yml
+application-local.properties
 
 # Logs
 logs/
