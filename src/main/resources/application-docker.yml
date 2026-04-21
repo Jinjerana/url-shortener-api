@@ -1,0 +1,31 @@
+spring:
+    datasource:
+        url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+
+    jpa:
+        hibernate:
+            #create tables automatically
+            ddl-auto: update
+        show-sql: false
+
+    data:
+        redis:
+            host: ${REDIS_HOST}
+            port: ${REDIS_PORT}
+
+# enable Prometheus endpoint
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health, info, metrics, prometheus
+    endpoint:
+        health:
+            show-details: always
+    prometheus:
+        metrics:
+            export: 
+                enabled: true
+            

@@ -23,8 +23,8 @@ spring:
     # JPA / Hibernate
 
     jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+        open-in-view: false
+   
     hibernate:
         ddl-auto: update
 
