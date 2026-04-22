@@ -4,8 +4,12 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
+import com.ganna.URLShortener_api.config.CacheConfig;
 import com.ganna.URLShortener_api.dto.ShortenRequest;
 import com.ganna.URLShortener_api.dto.ShortenResponse;
 import com.ganna.URLShortener_api.dto.UrlStatsResponse;
@@ -26,7 +30,6 @@ public class UrlService {
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int SHORT_CODE_LENGTH = 6;
-
     private final SecureRandom random = new SecureRandom();
 
     // Shorten url logic
@@ -67,8 +70,9 @@ public class UrlService {
      * @throws UrlNotFoundException if the short code is not found
      */
 
+    @Cacheable(value = CacheConfig.CACHE_URLS, key = "#shortCode") //Check cache first before hitting the database
+    @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Evict stats cache entry for the short code when accessed
     @Transactional
-
     public String getOriginalUrl(String shortCode) {
 
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
@@ -78,6 +82,8 @@ public class UrlService {
                 });
 
         urlRepository.incrementClickCountAndSetLastAccessedAt(shortCode);
+
+        log.info("Redirect: {} -> {}", shortCode, shortUrl.getOriginalUrl());
 
         return shortUrl.getOriginalUrl();
 
@@ -93,6 +99,10 @@ public class UrlService {
      */
 
     @Transactional
+    @Caching(evict = { //Evict cache entries for the short code when a URL is deleted
+        @CacheEvict(value = CacheConfig.CACHE_URLS, key = "#shortCode"),
+        @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode")
+    })
     public void deleteUrl(String shortCode) {
 
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
@@ -117,6 +127,7 @@ public class UrlService {
      * @throws UrlNotFoundException if the short code is not found
      */
 
+    @Cacheable(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Check cache first before hitting the database
     public UrlStatsResponse getStats(String shortCode) {
 
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
@@ -129,8 +140,8 @@ public class UrlService {
                 shortUrl.getShortCode(),
                 shortUrl.getOriginalUrl(),
                 shortUrl.getClickCount(),
-                shortUrl.getCreatedAt().toString(),
-                shortUrl.getLastAccessedAt() != null ? shortUrl.getLastAccessedAt().toLocalDate() : null
+                shortUrl.getCreatedAt(),
+                shortUrl.getLastAccessedAt()
         );
     }
 
@@ -148,8 +159,8 @@ public class UrlService {
                         shortUrl.getShortCode(),
                         shortUrl.getOriginalUrl(),
                         shortUrl.getClickCount(),
-                        shortUrl.getCreatedAt().toString(),
-                        shortUrl.getLastAccessedAt() != null ? shortUrl.getLastAccessedAt().toLocalDate() : null
+                        shortUrl.getCreatedAt(),
+                        shortUrl.getLastAccessedAt()
                 ))
                 .collect(Collectors.toList());
             }

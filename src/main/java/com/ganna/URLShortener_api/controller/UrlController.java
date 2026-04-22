@@ -1,6 +1,5 @@
 package com.ganna.URLShortener_api.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ganna.URLShortener_api.dto.ShortenRequest;
@@ -8,7 +7,6 @@ import com.ganna.URLShortener_api.dto.ShortenResponse;
 import com.ganna.URLShortener_api.dto.UrlStatsResponse;
 import com.ganna.URLShortener_api.service.UrlService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
