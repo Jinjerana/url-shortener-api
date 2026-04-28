@@ -42,13 +42,13 @@ public class UrlController {
     public ResponseEntity<ShortenResponse> shortenUrl(
             @RequestBody ShortenRequest request,
             HttpServletRequest httpRequest) {
-        
+
         validateUrl(request.originalUrl());
 
         // Dynamically construct the base URL from the incoming request
         String baseUrl = httpRequest.getScheme() + "://" + httpRequest.getServerName() + ":" + httpRequest.getServerPort();
         ShortenResponse response = urlService.shortenUrl(request, baseUrl);
-        log.info("POST /api/shorten -> {}", response.shortCode());
+        log.info("POST /api/shorten -> {}", response.getShortCode());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -104,7 +104,7 @@ public class UrlController {
             UrlStatsResponse stats = urlService.getStats(shortCode);
     
             log.info("GET /api/stats/{} -> clicks: {}, createdAt: {}, lastAccessedAt: {}",
-                    shortCode, stats.totalClicks(), stats.createdAt(), stats.lastAccessedAt());
+                    shortCode, stats.getTotalClicks(), stats.getCreatedAt(), stats.getLastAccessedAt());
             
             return ResponseEntity.ok(stats);
         }

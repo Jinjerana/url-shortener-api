@@ -75,6 +75,8 @@ public class UrlService {
     @Transactional
     public String getOriginalUrl(String shortCode) {
 
+        log.debug("Cache-MISS urls - loading from DB: {}", shortCode);
+
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() -> {
                     log.warn("Short code not found: {}", shortCode);
@@ -127,14 +129,19 @@ public class UrlService {
      * @throws UrlNotFoundException if the short code is not found
      */
 
-    @Cacheable(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Check cache first before hitting the database
+     @Cacheable(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Check cache first before hitting the database
     public UrlStatsResponse getStats(String shortCode) {
+
+        log.debug("Cache-MISS stats - loading from DB: {}", shortCode);
 
         ShortUrl shortUrl = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() -> {
                     log.warn("Short code not found for stats: {}", shortCode);
                     throw new UrlNotFoundException(shortCode);
                 });
+
+        log.info("GET /api/stats/{} - Clicks: {}, CreatedAt: {}, LastAccessedAt: {}",
+                shortCode, shortUrl.getClickCount(), shortUrl.getCreatedAt(), shortUrl.getLastAccessedAt());
 
         return new UrlStatsResponse(
                 shortUrl.getShortCode(),

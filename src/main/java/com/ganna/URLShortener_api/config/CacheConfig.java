@@ -29,12 +29,13 @@ public class CacheConfig {
 
     /**
      * @param connectionFactory the Redis connection factory
+     * @param redisObjectMapper the ObjectMapper configured for Redis serialization
      */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        ObjectMapper redisObjectMapper = new ObjectMapper();
+         ObjectMapper redisObjectMapper = new ObjectMapper();
         redisObjectMapper.registerModule(new JavaTimeModule());
-        redisObjectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+         redisObjectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         redisObjectMapper.activateDefaultTyping(redisObjectMapper.getPolymorphicTypeValidator(),
                 ObjectMapper.DefaultTyping.NON_FINAL);

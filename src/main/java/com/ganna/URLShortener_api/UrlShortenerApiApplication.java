@@ -9,5 +9,4 @@ public class UrlShortenerApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UrlShortenerApiApplication.class, args);
 	}
-
 }
