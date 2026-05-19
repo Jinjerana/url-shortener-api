@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.ganna.URLShortener_api.model.ShortUrl;
 
 public interface UrlRepository extends JpaRepository<ShortUrl, Long> {
+   
    Optional<ShortUrl> findByShortCode(String shortCode);
 
    boolean existsByShortCode(String shortCode);
