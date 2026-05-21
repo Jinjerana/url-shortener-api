@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ganna.URLShortener_api.dto.ShortenRequest;
 import com.ganna.URLShortener_api.dto.ShortenResponse;
 import com.ganna.URLShortener_api.dto.UrlStatsResponse;
+import com.ganna.URLShortener_api.exception.UrlNotFoundException;
 import com.ganna.URLShortener_api.service.UrlService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,25 +63,44 @@ public class UrlController {
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
         
-        String originalUrl = urlService.getOriginalUrl(shortCode);
         HttpHeaders headers = new HttpHeaders();
 
-        if(originalUrl != null && !originalUrl.isEmpty()) {
-        
+        try{
+        String originalUrl = urlService.getOriginalUrl(shortCode);
+
         log.info("GET /{} -> redirecting to {}", shortCode, originalUrl);
         headers.add(HttpHeaders.LOCATION, originalUrl);
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
-        }
         
-       else {
-        log.warn("GET /{} -> short code not found", shortCode);
+        } catch (UrlNotFoundException e) {
+            log.warn("GET /{} -> short code not found", shortCode);
 
-        String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound";
+            String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound&code=" + shortCode + "\"";
 
-        headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
+            headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
 
-        return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
-       }
+            return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
+        }
+
+    //     String originalUrl = urlService.getOriginalUrl(shortCode);
+    //     HttpHeaders headers = new HttpHeaders();
+
+    //     if(originalUrl != null && !originalUrl.isEmpty()) {
+        
+    //     log.info("GET /{} -> redirecting to {}", shortCode, originalUrl);
+    //     headers.add(HttpHeaders.LOCATION, originalUrl);
+    //     return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
+    //     }
+        
+    //    else {
+    //     log.warn("GET /{} -> short code not found", shortCode);
+
+    //     String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound";
+
+    //     headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
+
+    //     return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
+    //    }
 
     }
 
