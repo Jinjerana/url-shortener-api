@@ -128,7 +128,6 @@ public class UrlService {
      * @throws UrlNotFoundException if the short code is not found
      */
 
-    @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Evict URL cache entry for the short code when stats are accessed to ensure fresh data on next redirect
     public UrlStatsResponse getStats(String shortCode) {
 
         log.debug("Cache-MISS stats - loading from DB: {}", shortCode);
