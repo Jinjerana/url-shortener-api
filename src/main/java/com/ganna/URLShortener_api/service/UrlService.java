@@ -88,7 +88,6 @@ public class UrlService {
         log.info("Redirect: {} -> {}", shortCode, shortUrl.getOriginalUrl());
 
         return shortUrl.getOriginalUrl();
-
     }
 
     // delete logic
@@ -130,7 +129,6 @@ public class UrlService {
      */
 
     @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Evict URL cache entry for the short code when stats are accessed to ensure fresh data on next redirect
-    @Cacheable(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Check cache first before hitting the database
     public UrlStatsResponse getStats(String shortCode) {
 
         log.debug("Cache-MISS stats - loading from DB: {}", shortCode);

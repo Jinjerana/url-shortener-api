@@ -71,7 +71,7 @@ public class UrlController {
         log.info("GET /{} -> redirecting to {}", shortCode, originalUrl);
         headers.add(HttpHeaders.LOCATION, originalUrl);
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
-        
+
         } catch (UrlNotFoundException e) {
             log.warn("GET /{} -> short code not found", shortCode);
 
@@ -81,27 +81,6 @@ public class UrlController {
 
             return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
         }
-
-    //     String originalUrl = urlService.getOriginalUrl(shortCode);
-    //     HttpHeaders headers = new HttpHeaders();
-
-    //     if(originalUrl != null && !originalUrl.isEmpty()) {
-        
-    //     log.info("GET /{} -> redirecting to {}", shortCode, originalUrl);
-    //     headers.add(HttpHeaders.LOCATION, originalUrl);
-    //     return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
-    //     }
-        
-    //    else {
-    //     log.warn("GET /{} -> short code not found", shortCode);
-
-    //     String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound";
-
-    //     headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
-
-    //     return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
-    //    }
-
     }
 
      // delete logic
