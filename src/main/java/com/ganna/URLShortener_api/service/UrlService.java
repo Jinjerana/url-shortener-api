@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -71,7 +72,6 @@ public class UrlService {
      */
 
     @Cacheable(value = CacheConfig.CACHE_URLS, key = "#shortCode") //Check cache first before hitting the database
-    @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Evict stats cache entry for the short code when accessed
     @Transactional
     public String getOriginalUrl(String shortCode) {
 
@@ -83,11 +83,16 @@ public class UrlService {
                     throw new UrlNotFoundException(shortCode);
                 });
 
-        urlRepository.incrementClickCountAndSetLastAccessedAt(shortCode);
-
         log.info("Redirect: {} -> {}", shortCode, shortUrl.getOriginalUrl());
 
         return shortUrl.getOriginalUrl();
+    }
+
+    @Transactional
+    @CacheEvict(value = CacheConfig.CACHE_STATS, key = "#shortCode") //Evict cache entry for the short code when accessed
+    public void trackClick(String shortCode) {
+        urlRepository.incrementClickCountAndSetLastAccessedAt(shortCode);
+        log.debug("Click tracked for: {}", shortCode);
     }
 
     // delete logic

@@ -68,6 +68,8 @@ public class UrlController {
         try{
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
+        urlService.trackClick(shortCode);
+
         log.info("GET /{} -> redirecting to {}", shortCode, originalUrl);
         headers.add(HttpHeaders.LOCATION, originalUrl);
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
@@ -75,7 +77,7 @@ public class UrlController {
         } catch (UrlNotFoundException e) {
             log.warn("GET /{} -> short code not found", shortCode);
 
-            String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound&code=" + shortCode + "\"";
+            String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound&code=" + shortCode;
 
             headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
 
