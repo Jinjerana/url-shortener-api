@@ -77,7 +77,7 @@ public class UrlController {
         } catch (UrlNotFoundException e) {
             log.warn("GET /{} -> short code not found", shortCode);
 
-            String frontendErrorUrl = "https://jinjerana.github.io/url-shortener-frontend/?error=notfound&code=" + shortCode;
+            String frontendErrorUrl = "https://zaplink.ink/?error=notfound&code=" + shortCode;
 
             headers.add(HttpHeaders.LOCATION, frontendErrorUrl);
 
