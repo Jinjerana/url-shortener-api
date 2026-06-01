@@ -14,8 +14,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://localhost:4173",
                         "https://jinjerana.github.io",
-                        "https://zaplink.ink",
-                        "https://www.zaplink.ink"
+                        "https://lemoncut.space",
+                        "https://www.lemoncut.space"
                 )
                 .allowedMethods("GET", "POST", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
